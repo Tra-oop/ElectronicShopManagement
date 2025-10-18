@@ -7,58 +7,22 @@ namespace ElectronicShopManagement.Forms
 {
     public partial class Products_Stock : Form
     {
-        // Static list for sharing data with other forms
         public static List<ProductsModel> SharedProducts = new List<ProductsModel>();
-
-        private List<ProductsModel> filteredProducts;
 
         public Products_Stock()
         {
             InitializeComponent();
-            // Manually wire up all events
-            WireUpEvents();
-        }
-
-        private void WireUpEvents()
-        {
-            // Remove existing events first to avoid duplicates
-            textBox1.TextChanged -= textBox1_TextChanged;
-            comboBox1.SelectedIndexChanged -= comboBox1_SelectedIndexChanged;
-            button1.Click -= button1_Click;
-            button2.Click -= button2_Click;
-            button3.Click -= button3_Click;
-            tblproductstock.SelectionChanged -= DataGridView1_SelectionChanged;
-
-            // Add events
-            textBox1.TextChanged += textBox1_TextChanged;
-            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
-            button1.Click += button1_Click;
-            button2.Click += button2_Click;
-            button3.Click += button3_Click;
-            tblproductstock.SelectionChanged += DataGridView1_SelectionChanged;
         }
 
         private void Products_Stock_Load(object sender, EventArgs e)
         {
-            InitializeForm();
-        }
-
-        private void InitializeForm()
-        {
-            // Initialize the shared list if it's empty
+            // Load products first time
             if (SharedProducts.Count == 0)
             {
                 SharedProducts = ProductData.GetProducts().ToList();
             }
 
-            filteredProducts = new List<ProductsModel>();
-            SetupDataGridView();
-            LoadProducts();
-            SetupComboBoxes();
-        }
-
-        private void SetupDataGridView()
-        {
+            // Make table columns
             tblproductstock.Columns.Clear();
             tblproductstock.Columns.Add("ProductID", "Product ID");
             tblproductstock.Columns.Add("ProductName", "Product Name");
@@ -66,21 +30,26 @@ namespace ElectronicShopManagement.Forms
             tblproductstock.Columns.Add("Price", "Price");
             tblproductstock.Columns.Add("StockQuantity", "Quantity");
             tblproductstock.Columns["Price"].DefaultCellStyle.Format = "C2";
+
+            // IMPORTANT: Allow row selection
             tblproductstock.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             tblproductstock.ReadOnly = true;
             tblproductstock.AllowUserToAddRows = false;
+
+            // Show products in table
+            ShowProductsInTable();
+
+            // Put categories in dropdowns
+            PutCategoriesInDropdowns();
         }
 
-        private void LoadProducts()
+        private void ShowProductsInTable()
         {
-            filteredProducts = SharedProducts.ToList();
-            RefreshDataGridView();
-        }
-
-        private void RefreshDataGridView()
-        {
+            // Clear table first
             tblproductstock.Rows.Clear();
-            foreach (var product in filteredProducts)
+
+            // Add each product to table
+            foreach (var product in SharedProducts)
             {
                 tblproductstock.Rows.Add(
                     product.ProductID,
@@ -92,327 +61,224 @@ namespace ElectronicShopManagement.Forms
             }
         }
 
-        private void SetupComboBoxes()
+        private void PutCategoriesInDropdowns()
         {
-            var categories = SharedProducts.Select(p => p.Category).Distinct().ToList();
+            // Get all different categories
+            var allCategories = SharedProducts.Select(p => p.Category).Distinct().ToList();
 
+            // Fill search dropdown
             comboBox1.Items.Clear();
             comboBox1.Items.Add("All Categories");
-            comboBox1.Items.AddRange(categories.ToArray());
+            foreach (var cat in allCategories)
+            {
+                comboBox1.Items.Add(cat);
+            }
             comboBox1.SelectedIndex = 0;
 
+            // Fill category dropdown
             comboboxcategory.Items.Clear();
-            comboboxcategory.Items.AddRange(categories.ToArray());
+            foreach (var cat in allCategories)
+            {
+                comboboxcategory.Items.Add(cat);
+            }
             if (comboboxcategory.Items.Count > 0)
                 comboboxcategory.SelectedIndex = 0;
         }
 
-        // ========== EVENT HANDLERS ==========
-
+        // When user types in search box
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            FilterProducts();
+            DoSearch();
         }
 
+        // When user picks category
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FilterProducts();
+            DoSearch();
         }
 
+        private void DoSearch()
+        {
+            string searchText = textBox1.Text.ToLower();
+            string pickedCategory = comboBox1.SelectedItem?.ToString();
+
+            // Start with all products
+            var foundProducts = SharedProducts.ToList();
+
+            // If user typed something, search
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                foundProducts = foundProducts.Where(p =>
+                    p.ProductName.ToLower().Contains(searchText) ||
+                    p.ProductID.ToLower().Contains(searchText)
+                ).ToList();
+            }
+
+            // If user picked a category, filter
+            if (pickedCategory != "All Categories")
+            {
+                foundProducts = foundProducts.Where(p => p.Category == pickedCategory).ToList();
+            }
+
+            // Show found products
+            tblproductstock.Rows.Clear();
+            foreach (var product in foundProducts)
+            {
+                tblproductstock.Rows.Add(
+                    product.ProductID,
+                    product.ProductName,
+                    product.Category,
+                    product.Price,
+                    product.StockQuantity
+                );
+            }
+        }
+
+        // Add button click
         private void button1_Click(object sender, EventArgs e)
         {
-            AddProduct();
+            // Check if all boxes are filled
+            if (txtproid.Text == "" || txtproname.Text == "" || txtproprice.Text == "" || txtproqty.Text == "")
+            {
+                MessageBox.Show("Please fill all boxes");
+                return;
+            }
+
+            // Check if ID already used
+            if (SharedProducts.Any(p => p.ProductID == txtproid.Text))
+            {
+                MessageBox.Show("This ID already exists. Use different ID.");
+                return;
+            }
+
+            // Make new product
+            var newProduct = new ProductsModel
+            {
+                ProductID = txtproid.Text,
+                ProductName = txtproname.Text,
+                Category = comboboxcategory.SelectedItem.ToString(),
+                Price = decimal.Parse(txtproprice.Text),
+                StockQuantity = int.Parse(txtproqty.Text)
+            };
+
+            // Add to list
+            SharedProducts.Add(newProduct);
+
+            // Clear boxes and refresh
+            ClearForm();
+            ShowProductsInTable();
+            PutCategoriesInDropdowns();
+
+            MessageBox.Show("Product added!");
         }
 
+        // Update button click
         private void button2_Click(object sender, EventArgs e)
         {
-            UpdateProduct();
+            // Check if user picked a product
+            if (tblproductstock.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please click on a product in the table first");
+                return;
+            }
+
+            // Check if all boxes are filled
+            if (txtproid.Text == "" || txtproname.Text == "" || txtproprice.Text == "" || txtproqty.Text == "")
+            {
+                MessageBox.Show("Please fill all boxes");
+                return;
+            }
+
+            // Get old product ID from the selected row
+            var selectedRow = tblproductstock.SelectedRows[0];
+            string oldId = selectedRow.Cells["ProductID"].Value.ToString();
+            string newId = txtproid.Text;
+
+            // Check if new ID already used
+            if (oldId != newId && SharedProducts.Any(p => p.ProductID == newId))
+            {
+                MessageBox.Show("This ID already exists. Use different ID.");
+                return;
+            }
+
+            // Find the product to update
+            var product = SharedProducts.FirstOrDefault(p => p.ProductID == oldId);
+            if (product != null)
+            {
+                // Update product info
+                product.ProductID = newId;
+                product.ProductName = txtproname.Text;
+                product.Category = comboboxcategory.SelectedItem.ToString();
+                product.Price = decimal.Parse(txtproprice.Text);
+                product.StockQuantity = int.Parse(txtproqty.Text);
+            }
+
+            // Refresh table
+            ShowProductsInTable();
+            PutCategoriesInDropdowns();
+
+            MessageBox.Show("Product updated!");
         }
 
+        // Delete button click
         private void button3_Click(object sender, EventArgs e)
         {
-            DeleteProduct();
+            // Check if user picked a product
+            if (tblproductstock.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please click on a product in the table first");
+                return;
+            }
+
+            // Get product info from selected row
+            var selectedRow = tblproductstock.SelectedRows[0];
+            string productId = selectedRow.Cells["ProductID"].Value.ToString();
+            string productName = selectedRow.Cells["ProductName"].Value.ToString();
+
+            // Ask user to confirm
+            var result = MessageBox.Show($"Delete {productName}?", "Confirm", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                // Remove from list
+                SharedProducts.RemoveAll(p => p.ProductID == productId);
+
+                // Clear form and refresh
+                ClearForm();
+                ShowProductsInTable();
+                PutCategoriesInDropdowns();
+
+                MessageBox.Show("Product deleted!");
+            }
         }
 
+        // When user clicks on table row
         private void DataGridView1_SelectionChanged(object sender, EventArgs e)
         {
-            LoadSelectedProduct();
-        }
-
-        // Other event handlers that exist in designer
-        private void textBox3_TextChanged(object sender, EventArgs e) { }
-        private void label4_Click(object sender, EventArgs e) { }
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
-
-        // ========== CORE FUNCTIONALITY ==========
-
-        private void AddProduct()
-        {
-            try
+            if (tblproductstock.SelectedRows.Count > 0)
             {
-                if (ValidateInputs())
-                {
-                    string newId = txtproid.Text.Trim();
-
-                    // Check if Product ID already exists
-                    if (SharedProducts.Any(p => p.ProductID.Equals(newId, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        MessageBox.Show("Product ID already exists! Please use a different ID.", "Error");
-                        txtproid.Focus();
-                        return;
-                    }
-
-                    var newProduct = new ProductsModel
-                    {
-                        ProductID = newId,
-                        Category = comboboxcategory.SelectedItem?.ToString(),
-                        ProductName = txtproname.Text.Trim(),
-                        Price = decimal.Parse(txtproprice.Text),
-                        StockQuantity = int.Parse(txtproqty.Text)
-                    };
-
-                    // Add to shared list
-                    SharedProducts.Add(newProduct);
-
-                    // ✅ FIX 1: Update filteredProducts to include the new product
-                    filteredProducts = SharedProducts.ToList();
-
-                    ClearForm();
-                    RefreshDataGridView();
-                    UpdateCategoryComboBoxes();
-
-                    // ✅ FIX 2: Updated professional message
-                    MessageBox.Show("Product added successfully! Available in sales system immediately.", "Success");
-                }
+                var row = tblproductstock.SelectedRows[0];
+                txtproid.Text = row.Cells["ProductID"].Value.ToString();
+                comboboxcategory.SelectedItem = row.Cells["Category"].Value.ToString();
+                txtproname.Text = row.Cells["ProductName"].Value.ToString();
+                txtproprice.Text = row.Cells["Price"].Value.ToString();
+                txtproqty.Text = row.Cells["StockQuantity"].Value.ToString();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error adding product: {ex.Message}", "Error");
-            }
-        }
-
-        private void UpdateProduct()
-        {
-            try
-            {
-                if (tblproductstock.SelectedRows.Count == 0)
-                {
-                    MessageBox.Show("Please select a product to update.", "Information");
-                    return;
-                }
-
-                if (ValidateInputs())
-                {
-                    var selectedRow = tblproductstock.SelectedRows[0];
-                    string oldId = selectedRow.Cells["ProductID"].Value.ToString();
-                    string newId = txtproid.Text.Trim();
-
-                    // If ID changed, check if new ID exists
-                    if (oldId != newId && SharedProducts.Any(p => p.ProductID.Equals(newId, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        MessageBox.Show("Product ID already exists! Please use a different ID.", "Error");
-                        txtproid.Focus();
-                        return;
-                    }
-
-                    // Find and update the product in shared data
-                    var productToUpdate = SharedProducts.FirstOrDefault(p => p.ProductID == oldId);
-                    if (productToUpdate != null)
-                    {
-                        productToUpdate.ProductID = newId;
-                        productToUpdate.Category = comboboxcategory.SelectedItem?.ToString();
-                        productToUpdate.ProductName = txtproname.Text.Trim();
-                        productToUpdate.Price = decimal.Parse(txtproprice.Text);
-                        productToUpdate.StockQuantity = int.Parse(txtproqty.Text);
-                    }
-
-                    // ✅ FIX 1: Refresh filteredProducts to show updated data
-                    filteredProducts = SharedProducts.ToList();
-
-                    ClearForm();
-                    RefreshDataGridView();
-
-                    // ✅ FIX 2: Updated professional message
-                    MessageBox.Show("Product updated successfully! Changes applied to sales system.", "Success");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error updating product: {ex.Message}", "Error");
-            }
-        }
-
-        private void DeleteProduct()
-        {
-            try
-            {
-                if (tblproductstock.SelectedRows.Count == 0)
-                {
-                    MessageBox.Show("Please select a product to delete.", "Information");
-                    return;
-                }
-
-                var selectedRow = tblproductstock.SelectedRows[0];
-                string productId = selectedRow.Cells["ProductID"].Value.ToString();
-                string productName = selectedRow.Cells["ProductName"].Value.ToString();
-
-                var result = MessageBox.Show(
-                    $"Are you sure you want to delete '{productName}'?",
-                    "Confirm Delete",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
-                {
-                    // Remove from both lists
-                    SharedProducts.RemoveAll(p => p.ProductID == productId);
-
-                    // ✅ FIX 1: Update filteredProducts to remove the deleted product
-                    filteredProducts = SharedProducts.ToList();
-
-                    ClearForm();
-                    RefreshDataGridView();
-                    UpdateCategoryComboBoxes();
-
-                    // ✅ FIX 2: Updated professional message
-                    MessageBox.Show("Product deleted successfully! Removed from sales system.", "Success");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error deleting product: {ex.Message}", "Error");
-            }
-        }
-
-        private void LoadSelectedProduct()
-        {
-            try
-            {
-                if (tblproductstock.SelectedRows.Count > 0 && tblproductstock.SelectedRows[0].Cells["ProductID"].Value != null)
-                {
-                    var selectedRow = tblproductstock.SelectedRows[0];
-                    txtproid.Text = selectedRow.Cells["ProductID"].Value.ToString();
-                    comboboxcategory.SelectedItem = selectedRow.Cells["Category"].Value.ToString();
-                    txtproname.Text = selectedRow.Cells["ProductName"].Value.ToString();
-                    txtproprice.Text = selectedRow.Cells["Price"].Value.ToString();
-                    txtproqty.Text = selectedRow.Cells["StockQuantity"].Value.ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-                // Silent fail for selection changes
-            }
-        }
-
-        private void FilterProducts()
-        {
-            try
-            {
-                string searchText = textBox1.Text.ToLower();
-                string selectedCategory = comboBox1.SelectedItem?.ToString();
-
-                filteredProducts = SharedProducts.Where(p =>
-                    (string.IsNullOrEmpty(searchText) ||
-                     p.ProductName.ToLower().Contains(searchText) ||
-                     p.ProductID.ToLower().Contains(searchText)) &&
-                    (selectedCategory == "All Categories" || p.Category == selectedCategory)
-                ).ToList();
-
-                RefreshDataGridView();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error filtering products: {ex.Message}", "Error");
-            }
-        }
-
-        private bool ValidateInputs()
-        {
-            if (string.IsNullOrWhiteSpace(txtproid.Text))
-            {
-                MessageBox.Show("Please enter Product ID.", "Validation Error");
-                txtproid.Focus();
-                return false;
-            }
-
-            if (comboboxcategory.SelectedItem == null)
-            {
-                MessageBox.Show("Please select a category.", "Validation Error");
-                comboboxcategory.Focus();
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtproname.Text))
-            {
-                MessageBox.Show("Please enter Product Name.", "Validation Error");
-                txtproname.Focus();
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtproprice.Text))
-            {
-                MessageBox.Show("Please enter Product Price.", "Validation Error");
-                txtproprice.Focus();
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtproqty.Text))
-            {
-                MessageBox.Show("Please enter Product Quantity.", "Validation Error");
-                txtproqty.Focus();
-                return false;
-            }
-
-            if (!decimal.TryParse(txtproprice.Text, out decimal price) || price <= 0)
-            {
-                MessageBox.Show("Please enter a valid price (greater than 0).", "Validation Error");
-                txtproprice.Focus();
-                txtproprice.SelectAll();
-                return false;
-            }
-
-            if (!int.TryParse(txtproqty.Text, out int quantity) || quantity < 0)
-            {
-                MessageBox.Show("Please enter a valid quantity (0 or greater).", "Validation Error");
-                txtproqty.Focus();
-                txtproqty.SelectAll();
-                return false;
-            }
-
-            return true;
         }
 
         private void ClearForm()
         {
-            txtproid.Clear();
+            txtproid.Text = "";
+            txtproname.Text = "";
+            txtproprice.Text = "";
+            txtproqty.Text = "";
             if (comboboxcategory.Items.Count > 0)
                 comboboxcategory.SelectedIndex = 0;
-            txtproname.Clear();
-            txtproprice.Clear();
-            txtproqty.Clear();
             tblproductstock.ClearSelection();
         }
 
-        private void UpdateCategoryComboBoxes()
-        {
-            try
-            {
-                var categories = SharedProducts.Select(p => p.Category).Distinct().ToList();
-
-                comboBox1.Items.Clear();
-                comboBox1.Items.Add("All Categories");
-                comboBox1.Items.AddRange(categories.ToArray());
-                comboBox1.SelectedIndex = 0;
-
-                comboboxcategory.Items.Clear();
-                comboboxcategory.Items.AddRange(categories.ToArray());
-                if (comboboxcategory.Items.Count > 0)
-                    comboboxcategory.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error updating categories: {ex.Message}", "Error");
-            }
-        }
+        
+        private void textBox3_TextChanged(object sender, EventArgs e) { }
+        private void label4_Click(object sender, EventArgs e) { }
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
     }
 }

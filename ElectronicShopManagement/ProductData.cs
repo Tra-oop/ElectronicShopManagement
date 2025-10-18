@@ -6,6 +6,7 @@ namespace ElectronicShopManagement
 {
     public static class ProductData
     {
+
         public static List<ProductsModel> GetProducts()
         {
             // FIRST check if Products_Stock has shared data

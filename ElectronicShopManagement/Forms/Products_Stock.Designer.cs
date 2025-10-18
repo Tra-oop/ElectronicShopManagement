@@ -2,15 +2,8 @@
 {
     partial class Products_Stock
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.toplabel = new System.Windows.Forms.Label();
@@ -66,6 +55,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(234, 20);
             this.textBox1.TabIndex = 9;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label1
             // 
@@ -85,6 +75,7 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(129, 21);
             this.comboBox1.TabIndex = 11;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // txtproid
             // 
@@ -107,11 +98,6 @@
             // comboboxcategory
             // 
             this.comboboxcategory.FormattingEnabled = true;
-            this.comboboxcategory.Items.AddRange(new object[] {
-            "s",
-            "fs",
-            "sfs",
-            "s"});
             this.comboboxcategory.Location = new System.Drawing.Point(339, 130);
             this.comboboxcategory.Name = "comboboxcategory";
             this.comboboxcategory.Size = new System.Drawing.Size(129, 21);
@@ -202,6 +188,7 @@
             this.button2.TabIndex = 23;
             this.button2.Text = "Update";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
@@ -211,6 +198,7 @@
             this.button3.TabIndex = 24;
             this.button3.Text = "Delete";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // tblproductstock
             // 
@@ -221,6 +209,8 @@
             this.tblproductstock.Name = "tblproductstock";
             this.tblproductstock.Size = new System.Drawing.Size(1127, 405);
             this.tblproductstock.TabIndex = 25;
+            this.tblproductstock.SelectionChanged += new System.EventHandler(this.DataGridView1_SelectionChanged);
+            this.tblproductstock.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // Products_Stock
             // 
