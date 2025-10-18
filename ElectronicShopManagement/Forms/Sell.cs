@@ -12,10 +12,14 @@ using System.Windows.Forms;
 using System.Net.Http;
 using ElectronicShopManagement;
 
+
 namespace ElectronicShopManagement.Forms
 {
     public partial class Sell : Form
     {
+        public static List<ProductForSellModel> products = new List<ProductForSellModel>();
+        
+
         List<ProductForSellModel> products = new List<ProductForSellModel>();
         ProductForSellModel productsModel = new ProductForSellModel();
 
@@ -38,6 +42,11 @@ namespace ElectronicShopManagement.Forms
         // Add To Cart
         private void button1_Click(object sender, EventArgs e)
         {
+            if (combocashier.SelectedItem == null)
+            {
+                MessageBox.Show("Please select Cashier name.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             if (comboboxsell.SelectedItem == null || comboboxsellproname.SelectedItem == null)
                 return;
 
@@ -48,10 +57,16 @@ namespace ElectronicShopManagement.Forms
             {
                 Categories = comboboxsell.SelectedItem.ToString(),
                 ID = comboboxsellproname.SelectedValue.ToString(),
+                Cashier=combocashier.SelectedItem.ToString(),
                 Name = comboboxsellproname.Text,
+                Prices = Convert.ToDecimal(txtsellprice.Text),
+                SellQty = Convert.ToInt32(txtsellqty.Text),
+                date = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt"),
+
                 Prices = price,
                 SellQty = qty,
             };
+            
             products.Add(productsModel);
 
             productsModel.Amount = productsModel.Prices * productsModel.SellQty;
@@ -60,26 +75,39 @@ namespace ElectronicShopManagement.Forms
 
             txtsellqty.Text = "1";
 
+           
+
             tblshowproductsell.DataSource = null;
             tblshowproductsell.DataSource = products;
             tblshowproductsell.Columns["totalAmount"].Visible = false;
             tblshowproductsell.Columns["ID"].Visible = false;
+            tblshowproductsell.Columns["date"].Visible = false;
+            tblshowproductsell.Columns["Cashier"].Visible = false;
+
         }
 
         
         private async Task CheckPaymentAsync(string md5)
         {
             var client = new HttpClient();
-            var url2 = "https://api-bakong.nbc.gov.kh/v1/check_transaction_by_md5";
+            var url = "https://api-bakong.nbc.gov.kh/v1/check_transaction_by_md5";
             var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoiZTI4NzY2YjAxMDA4NGI2ZiJ9LCJpYXQiOjE3NTg3ODg2MjUsImV4cCI6MTc2NjU2NDYyNX0.rfqbEiwVn-VzpxTecK7lHea20c-Bv48T2kkuC0N0Mjc";
+            var startTime = DateTime.Now;
+            var timeout = TimeSpan.FromMinutes(1);
+
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
+            while (DateTime.Now - startTime < timeout)
             for (int i = 0; i < 10; i++)
             {
                 var json = $"{{ \"md5\": \"{md5}\" }}";
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(url, content);
+                var result = await response.Content.ReadAsStringAsync();
+                //Console.WriteLine($"[{DateTime.Now}] Response: {result}");
 
                 var response4 = await client.PostAsync(url2, content);
                 var result = await response4.Content.ReadAsStringAsync();
@@ -91,9 +119,23 @@ namespace ElectronicShopManagement.Forms
                         "Bakong KHQR",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
+                        
                     );
-
+                    
                     if (dialogResult == DialogResult.OK)
+                     {
+                        Invoice invoice = new Invoice();
+                        invoice.Show();
+
+                        foreach (Form f in Application.OpenForms)
+                        {
+                        if (f is BakongKhqr)
+                        {
+                            f.Close();
+                            break;
+                        }
+                    }
+                        //products.Clear();
                     {
                       
                         DataStorage.AddFromCart(products);
@@ -107,6 +149,12 @@ namespace ElectronicShopManagement.Forms
                         
                         products.Clear();
                         tblshowproductsell.DataSource = null;
+                        tblshowproductsell.DataSource = products; // rebind
+                        tblshowproductsell.Columns["totalAmount"].Visible = false;
+                        tblshowproductsell.Columns["ID"].Visible = false;
+                        tblshowproductsell.Columns["date"].Visible = false;
+                        tblshowproductsell.Columns["Cashier"].Visible = false;
+
                         tblshowproductsell.DataSource = products;
                         if (tblshowproductsell.Columns.Contains("totalAmount"))
                             tblshowproductsell.Columns["totalAmount"].Visible = false;
@@ -118,6 +166,10 @@ namespace ElectronicShopManagement.Forms
                     break;
                 }
 
+                await Task.Delay(5000); // wait 5 seconds
+            }
+           
+        }
                 await Task.Delay(5000);
             }
         }
@@ -127,6 +179,8 @@ namespace ElectronicShopManagement.Forms
         {
             decimal totalAmount = products.Sum(p => p.Prices * p.SellQty);
             if (totalAmount <= 0) return;
+
+
 
             DateTime now = DateTime.UtcNow;
             long millisecondsSinceEpoch = (long)(now - new DateTime(1970, 1, 1)).TotalMilliseconds;
@@ -206,6 +260,11 @@ namespace ElectronicShopManagement.Forms
 
                     tblshowproductsell.DataSource = null;
                     tblshowproductsell.DataSource = products;
+                    tblshowproductsell.Columns["totalAmount"].Visible = false;
+                    tblshowproductsell.Columns["ID"].Visible = false;
+                    tblshowproductsell.Columns["date"].Visible = false;
+                    tblshowproductsell.Columns["Cashier"].Visible = false;
+
                     if (tblshowproductsell.Columns.Contains("totalAmount"))
                         tblshowproductsell.Columns["totalAmount"].Visible = false;
                     if (tblshowproductsell.Columns.Contains("ID"))
@@ -220,6 +279,16 @@ namespace ElectronicShopManagement.Forms
 
         private void Sell_Load(object sender, EventArgs e)
         {
+        }
+
+        private void Sell_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtamount_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

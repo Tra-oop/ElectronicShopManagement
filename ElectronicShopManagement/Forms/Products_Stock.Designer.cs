@@ -2,15 +2,8 @@
 {
     partial class Products_Stock
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,31 +15,27 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.toplabel = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtproid = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.comboboxcategory = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.txtproname = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.txtproprice = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.txtproqty = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.tblproductstock = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.tblproductstock)).BeginInit();
             this.SuspendLayout();
             // 
             // toplabel
@@ -66,6 +55,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(234, 20);
             this.textBox1.TabIndex = 9;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label1
             // 
@@ -85,13 +75,14 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(129, 21);
             this.comboBox1.TabIndex = 11;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // textBox2
+            // txtproid
             // 
-            this.textBox2.Location = new System.Drawing.Point(339, 188);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(129, 20);
-            this.textBox2.TabIndex = 13;
+            this.txtproid.Location = new System.Drawing.Point(339, 188);
+            this.txtproid.Name = "txtproid";
+            this.txtproid.Size = new System.Drawing.Size(129, 20);
+            this.txtproid.TabIndex = 13;
             // 
             // label2
             // 
@@ -104,8 +95,13 @@
             this.label2.TabIndex = 12;
             this.label2.Text = "Product Id";
             // 
-            // comboBox2
+            // comboboxcategory
             // 
+            this.comboboxcategory.FormattingEnabled = true;
+            this.comboboxcategory.Location = new System.Drawing.Point(339, 130);
+            this.comboboxcategory.Name = "comboboxcategory";
+            this.comboboxcategory.Size = new System.Drawing.Size(129, 21);
+            this.comboboxcategory.TabIndex = 15;
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.Location = new System.Drawing.Point(339, 130);
             this.comboBox2.Name = "comboBox2";
@@ -124,13 +120,13 @@
             this.label3.TabIndex = 14;
             this.label3.Text = "Category";
             // 
-            // textBox3
+            // txtproname
             // 
-            this.textBox3.Location = new System.Drawing.Point(339, 243);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(129, 20);
-            this.textBox3.TabIndex = 17;
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
+            this.txtproname.Location = new System.Drawing.Point(339, 243);
+            this.txtproname.Name = "txtproname";
+            this.txtproname.Size = new System.Drawing.Size(129, 20);
+            this.txtproname.TabIndex = 17;
+            this.txtproname.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // label4
             // 
@@ -144,12 +140,12 @@
             this.label4.Text = "Product Name";
             this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
-            // textBox4
+            // txtproprice
             // 
-            this.textBox4.Location = new System.Drawing.Point(703, 130);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(129, 20);
-            this.textBox4.TabIndex = 19;
+            this.txtproprice.Location = new System.Drawing.Point(703, 130);
+            this.txtproprice.Name = "txtproprice";
+            this.txtproprice.Size = new System.Drawing.Size(129, 20);
+            this.txtproprice.TabIndex = 19;
             // 
             // label5
             // 
@@ -162,12 +158,12 @@
             this.label5.TabIndex = 18;
             this.label5.Text = "Product Price";
             // 
-            // textBox5
+            // txtproqty
             // 
-            this.textBox5.Location = new System.Drawing.Point(703, 190);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(129, 20);
-            this.textBox5.TabIndex = 21;
+            this.txtproqty.Location = new System.Drawing.Point(703, 190);
+            this.txtproqty.Name = "txtproqty";
+            this.txtproqty.Size = new System.Drawing.Size(129, 20);
+            this.txtproqty.TabIndex = 21;
             // 
             // label6
             // 
@@ -188,6 +184,7 @@
             this.button1.TabIndex = 22;
             this.button1.Text = "Add";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
@@ -197,6 +194,7 @@
             this.button2.TabIndex = 23;
             this.button2.Text = "Update";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
@@ -206,33 +204,38 @@
             this.button3.TabIndex = 24;
             this.button3.Text = "Delete";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // dataGridView1
+            // tblproductstock
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 287);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(1127, 336);
-            this.dataGridView1.TabIndex = 25;
+            this.tblproductstock.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.tblproductstock.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.tblproductstock.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.tblproductstock.Location = new System.Drawing.Point(12, 287);
+            this.tblproductstock.Name = "tblproductstock";
+            this.tblproductstock.Size = new System.Drawing.Size(1127, 405);
+            this.tblproductstock.TabIndex = 25;
+            this.tblproductstock.SelectionChanged += new System.EventHandler(this.DataGridView1_SelectionChanged);
+            this.tblproductstock.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // Products_Stock
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1207, 635);
-            this.Controls.Add(this.dataGridView1);
+            this.ClientSize = new System.Drawing.Size(1207, 698);
+            this.Controls.Add(this.tblproductstock);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.txtproqty);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.txtproprice);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.txtproname);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.comboboxcategory);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.txtproid);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.label1);
@@ -240,6 +243,8 @@
             this.Controls.Add(this.toplabel);
             this.Name = "Products_Stock";
             this.Text = "Products Stock";
+            this.Load += new System.EventHandler(this.Products_Stock_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.tblproductstock)).EndInit();
             this.Load += new System.EventHandler(this.Products_Stock_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
@@ -253,19 +258,19 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtproid;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox comboboxcategory;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox txtproname;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox txtproprice;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox txtproqty;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView tblproductstock;
     }
 }

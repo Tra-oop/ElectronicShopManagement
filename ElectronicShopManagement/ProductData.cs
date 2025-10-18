@@ -1,15 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ElectronicShopManagement
 {
-    public class ProductData
+    public static class ProductData
     {
+
         public static List<ProductsModel> GetProducts()
         {
+            // FIRST check if Products_Stock has shared data
+            try
+            {
+                // Check if the SharedProducts list exists and has data
+                if (Forms.Products_Stock.SharedProducts != null &&
+                    Forms.Products_Stock.SharedProducts.Count > 0)
+                {
+                    return Forms.Products_Stock.SharedProducts.ToList();
+                }
+            }
+            catch
+            {
+                // If Products_Stock hasn't been loaded yet, continue to original data
+            }
+
+            //  Fallback to original data if no shared data exists
             return new List<ProductsModel>
             {
                 new ProductsModel { ProductID = "PB001", ProductName = "Anker PowerCore 10000", Category = "Power Bank", Price = 29.99m, StockQuantity = 50 },

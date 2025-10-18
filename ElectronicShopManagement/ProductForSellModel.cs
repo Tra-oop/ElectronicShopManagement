@@ -15,6 +15,8 @@ namespace ElectronicShopManagement
         public decimal Prices { get; set; }
         public decimal Amount { get; set; }
         public decimal totalAmount { get; set; }
+        public string date {  get; set; }
+        public string Cashier { get; set; } 
 
     }
 }

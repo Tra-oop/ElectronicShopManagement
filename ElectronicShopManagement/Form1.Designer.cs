@@ -86,21 +86,23 @@
             // 
             // txtusername
             // 
+            this.txtusername.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.txtusername.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtusername.Location = new System.Drawing.Point(115, 214);
+            this.txtusername.Location = new System.Drawing.Point(115, 224);
             this.txtusername.Multiline = true;
             this.txtusername.Name = "txtusername";
-            this.txtusername.Size = new System.Drawing.Size(211, 26);
+            this.txtusername.Size = new System.Drawing.Size(211, 16);
             this.txtusername.TabIndex = 4;
             this.txtusername.TextChanged += new System.EventHandler(this.txtusername_TextChanged);
             // 
             // txtpassword
             // 
+            this.txtpassword.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.txtpassword.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtpassword.Location = new System.Drawing.Point(115, 283);
+            this.txtpassword.Location = new System.Drawing.Point(115, 295);
             this.txtpassword.Multiline = true;
             this.txtpassword.Name = "txtpassword";
-            this.txtpassword.Size = new System.Drawing.Size(211, 26);
+            this.txtpassword.Size = new System.Drawing.Size(211, 14);
             this.txtpassword.TabIndex = 5;
             // 
             // btnlogin

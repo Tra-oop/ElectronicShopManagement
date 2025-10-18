@@ -42,6 +42,8 @@
             this.tblshowproductsell = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.txtamount = new System.Windows.Forms.Label();
+            this.combocashier = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.tblshowproductsell)).BeginInit();
             this.SuspendLayout();
             // 
@@ -182,15 +184,42 @@
             this.txtamount.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.txtamount.Location = new System.Drawing.Point(902, 490);
             this.txtamount.Name = "txtamount";
-            this.txtamount.Size = new System.Drawing.Size(53, 26);
+            this.txtamount.Size = new System.Drawing.Size(59, 26);
             this.txtamount.TabIndex = 36;
-            this.txtamount.Text = "0.00";
+            this.txtamount.Text = "0.00 ";
+            this.txtamount.Click += new System.EventHandler(this.txtamount_Click);
+            // 
+            // combocashier
+            // 
+            this.combocashier.FormattingEnabled = true;
+            this.combocashier.Items.AddRange(new object[] {
+            "Theany",
+            "Vuth",
+            "Tak",
+            "Tra"});
+            this.combocashier.Location = new System.Drawing.Point(415, 170);
+            this.combocashier.Name = "combocashier";
+            this.combocashier.Size = new System.Drawing.Size(171, 21);
+            this.combocashier.TabIndex = 38;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label2.Location = new System.Drawing.Point(278, 169);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(114, 19);
+            this.label2.TabIndex = 37;
+            this.label2.Text = "Cashier Name";
             // 
             // Sell
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1215, 639);
+            this.Controls.Add(this.combocashier);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.txtamount);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tblshowproductsell);
@@ -230,5 +259,7 @@
         private System.Windows.Forms.DataGridView tblshowproductsell;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label txtamount;
+        private System.Windows.Forms.ComboBox combocashier;
+        private System.Windows.Forms.Label label2;
     }
 }
