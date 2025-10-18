@@ -38,6 +38,7 @@ namespace ElectronicShopManagement.Forms
 
         private void panelshowitem1_Paint(object sender, PaintEventArgs e)
         {
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -72,6 +73,11 @@ namespace ElectronicShopManagement.Forms
         private void FormDashboard_Load(object sender, EventArgs e)
         {
             OpenchildForm(new Forms.Home());
+
+        }
+
+        private void panelshowitem1_Paint_1(object sender, PaintEventArgs e)
+        {
 
         }
     }

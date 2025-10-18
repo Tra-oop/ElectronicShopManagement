@@ -170,6 +170,7 @@
             this.panelshowitem1.Name = "panelshowitem1";
             this.panelshowitem1.Size = new System.Drawing.Size(1091, 533);
             this.panelshowitem1.TabIndex = 2;
+            this.panelshowitem1.Paint += new System.Windows.Forms.PaintEventHandler(this.panelshowitem1_Paint_1);
             // 
             // FormDashboard
             // 

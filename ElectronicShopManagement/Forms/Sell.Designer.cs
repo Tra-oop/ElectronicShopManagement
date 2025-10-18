@@ -207,6 +207,7 @@
             this.Controls.Add(this.label3);
             this.Name = "Sell";
             this.Text = "Sell";
+            this.Load += new System.EventHandler(this.Sell_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tblshowproductsell)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
